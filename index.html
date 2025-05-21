@@ -1,32 +1,55 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Фитнес</title>
   <!-- Подключаем Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
       font-family: Arial, sans-serif;
       background-color: #f8f8f8;
-      text-align: center;
-      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-
     .container {
       background: white;
       padding: 20px;
       border-radius: 12px;
-      max-width: 360px;
-      margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      box-sizing: border-box;
+      text-align: center;
     }
-
     input, button {
       font-size: 18px;
-      margin: 10px;
+      margin: 10px 0;
       padding: 10px;
-      width: 80%;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1976D2;
+    }
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 20px;
+      color: #333;
     }
   </style>
 </head>
@@ -34,23 +57,24 @@
   <div class="container">
     <h2>Фитнес-приложение</h2>
     <p>Введите ваш вес и рост</p>
-    <input type="number" id="weight" placeholder="Вес (кг)">
-    <input type="number" id="height" placeholder="Рост (см)">
-    <br>
+    <input type="number" id="weight" placeholder="Вес (кг)" />
+    <input type="number" id="height" placeholder="Рост (см)" />
     <button onclick="calculate()">Рассчитать</button>
     <p id="result"></p>
   </div>
 
   <script>
-    // РАСКРЫВАЕМ ПРИЛОЖЕНИЕ НА ВЕСЬ ЭКРАН
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Важно для Telegram Web App
+    window.onload = () => {
+      const tg = window.Telegram.WebApp;
+      tg.expand();
+    };
 
     function calculate() {
       const weight = parseFloat(document.getElementById("weight").value);
       const height = parseFloat(document.getElementById("height").value);
-      
+
       if (weight && height) {
+        // Формула для расчёта базового метаболизма (пример)
         const kcal = 10 * weight + 6.25 * height - 5 * 25 + 5;
         document.getElementById("result").innerText = Норма: ${Math.round(kcal)} ккал/день;
       } else {
