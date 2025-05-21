@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Фитнес</title>
+  <!-- Подключаем Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
@@ -11,6 +12,7 @@
       text-align: center;
       padding: 30px;
     }
+
     .container {
       background: white;
       padding: 20px;
@@ -19,6 +21,7 @@
       margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     input, button {
       font-size: 18px;
       margin: 10px;
@@ -39,9 +42,14 @@
   </div>
 
   <script>
+    // РАСКРЫВАЕМ ПРИЛОЖЕНИЕ НА ВЕСЬ ЭКРАН
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Важно для Telegram Web App
+
     function calculate() {
       const weight = parseFloat(document.getElementById("weight").value);
       const height = parseFloat(document.getElementById("height").value);
+      
       if (weight && height) {
         const kcal = 10 * weight + 6.25 * height - 5 * 25 + 5;
         document.getElementById("result").innerText = Норма: ${Math.round(kcal)} ккал/день;
