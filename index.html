@@ -2,85 +2,222 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Фитнес</title>
-  <!-- Подключаем Telegram WebApp SDK -->
+  <title>Фитнес WebApp</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
+      margin: 0; padding: 0; height: 100%; width: 100%;
       font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+    }
+    #app {
+      flex-grow: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-    }
-    .container {
-      background: white;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 400px;
       box-sizing: border-box;
-      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
-    input, button {
-      font-size: 18px;
-      margin: 10px 0;
-      padding: 10px;
+    .screen {
+      position: absolute;
       width: 100%;
-      box-sizing: border-box;
+      height: 100%;
+      top: 0; left: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      transition: opacity 0.5s ease;
+    }
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Стиль логотипа */
+    #logo-screen h1 {
+      font-size: 3em;
+      color: #2196F3;
+    }
+
+    /* Форма ввода */
+    #input-screen input {
+      font-size: 18px;
+      padding: 10px;
+      margin: 10px 0;
+      width: 250px;
+      max-width: 90%;
       border-radius: 6px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
-    button {
+    #input-screen button {
+      font-size: 18px;
+      padding: 10px 20px;
       background-color: #2196F3;
       color: white;
       border: none;
+      border-radius: 6px;
       cursor: pointer;
-    }
-    button:hover {
-      background-color: #1976D2;
-    }
-    #result {
       margin-top: 15px;
+      width: 250px;
+      max-width: 90%;
+    }
+    #input-screen button:disabled {
+      background-color: #90caf9;
+      cursor: not-allowed;
+    }
+    #input-screen p.error {
+      color: red;
+      margin-top: 10px;
+    }
+
+    /* Главное меню */
+    #menu-screen {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    #content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    #nav {
+      display: flex;
+      border-top: 1px solid #ccc;
+      background: #f0f0f0;
+      height: 56px;
+    }
+    #nav button {
+      flex-grow: 1;
+      border: none;
+      background: none;
+      font-size: 16px;
+      cursor: pointer;
+      outline: none;
+      transition: background-color 0.2s;
+    }
+    #nav button:hover {
+      background-color: #ddd;
+    }
+    #nav button.active {
+      background-color: #2196F3;
+      color: white;
       font-weight: bold;
-      font-size: 20px;
-      color: #333;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Фитнес-приложение</h2>
-    <p>Введите ваш вес и рост</p>
-    <input type="number" id="weight" placeholder="Вес (кг)" />
-    <input type="number" id="height" placeholder="Рост (см)" />
-    <button onclick="calculate()">Рассчитать</button>
-    <p id="result"></p>
+  <div id="app">
+    <!-- Логотип -->
+    <div id="logo-screen" class="screen">
+      <h1>Мой Бренд</h1>
+    </div>
+
+    <!-- Ввод веса и роста -->
+    <div id="input-screen" class="screen hidden">
+      <h2>Введите ваши данные</h2>
+      <input type="number" id="weight" placeholder="Вес (кг)" min="20" max="300" />
+      <input type="number" id="height" placeholder="Рост (см)" min="50" max="250" />
+      <button id="continue-btn" disabled>Продолжить</button>
+      <p id="error-msg" class="error"></p>
+    </div>
+
+    <!-- Главное меню -->
+    <div id="menu-screen" class="screen hidden">
+      <div id="content">
+        <h2>План питания</h2>
+        <p>Здесь будет план питания на 30 дней...</p>
+      </div>
+      <nav id="nav">
+        <button id="menu-food" class="active">План питания</button>
+        <button id="menu-workout">Тренировки</button>
+        <button id="menu-profile">Профиль</button>
+      </nav>
+    </div>
   </div>
 
   <script>
     window.onload = () => {
       const tg = window.Telegram.WebApp;
       tg.expand();
-    };
 
-    function calculate() {
-      const weight = parseFloat(document.getElementById("weight").value);
-      const height = parseFloat(document.getElementById("height").value);
+      const logoScreen = document.getElementById('logo-screen');
+      const inputScreen = document.getElementById('input-screen');
+      const menuScreen = document.getElementById('menu-screen');
 
-      if (weight && height) {
-        // Формула для расчёта базового метаболизма (пример)
-        const kcal = 10 * weight + 6.25 * height - 5 * 25 + 5;
-        document.getElementById("result").innerText = Норма: ${Math.round(kcal)} ккал/день;
-      } else {
-        document.getElementById("result").innerText = "Введите вес и рост корректно";
+      const weightInput = document.getElementById('weight');
+      const heightInput = document.getElementById('height');
+      const continueBtn = document.getElementById('continue-btn');
+      const errorMsg = document.getElementById('error-msg');
+
+      const content = document.getElementById('content');
+      const menuFoodBtn = document.getElementById('menu-food');
+      const menuWorkoutBtn =
+01:27
+
+
+ument.getElementById('menu-workout');
+      const menuProfileBtn = document.getElementById('menu-profile');
+
+      // Показать экран ввода после 2 секунд логотипа
+      setTimeout(() => {
+        logoScreen.classList.add('hidden');
+        inputScreen.classList.remove('hidden');
+      }, 2000);
+
+      // Валидация кнопки "Продолжить"
+      function validateInputs() {
+        const w = parseFloat(weightInput.value);
+        const h = parseFloat(heightInput.value);
+        if (w >= 20 && w <= 300 && h >= 50 && h <= 250) {
+          continueBtn.disabled = false;
+          errorMsg.textContent = '';
+        } else {
+          continueBtn.disabled = true;
+          errorMsg.textContent = 'Пожалуйста, введите корректные значения';
+        }
       }
-    }
+
+      weightInput.addEventListener('input', validateInputs);
+      heightInput.addEventListener('input', validateInputs);
+
+      // При нажатии "Продолжить" показываем меню
+      continueBtn.onclick = () => {
+        inputScreen.classList.add('hidden');
+        menuScreen.classList.remove('hidden');
+        showMenuContent('food');
+      };
+
+      // Функция показа контента меню
+      function showMenuContent(tab) {
+        menuFoodBtn.classList.remove('active');
+        menuWorkoutBtn.classList.remove('active');
+        menuProfileBtn.classList.remove('active');
+
+        if (tab === 'food') {
+          content.innerHTML = '<h2>План питания</h2><p>Здесь будет план питания на 30 дней...</p>';
+          menuFoodBtn.classList.add('active');
+        } else if (tab === 'workout') {
+          content.innerHTML = '<h2>Тренировки</h2><p>Здесь будут тренировки на 30 дней...</p>';
+          menuWorkoutBtn.classList.add('active');
+        } else if (tab === 'profile') {
+          content.innerHTML = '<h2>Профиль</h2><p>Информация о пользователе...</p>';
+          menuProfileBtn.classList.add('active');
+        }
+      }
+
+      // Обработчики кнопок меню
+      menuFoodBtn.onclick = () => showMenuContent('food');
+      menuWorkoutBtn.onclick = () => showMenuContent('workout');
+      menuProfileBtn.onclick = () => showMenuContent('profile');
+    };
   </script>
 </body>
-</html>
+</html> doc
