@@ -11,6 +11,7 @@
       background-color: white;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
     #app {
       flex-grow: 1;
@@ -27,24 +28,29 @@
       width: 100%;
       height: 100%;
       top: 0; left: 0;
+      background: white;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: white;
       transition: opacity 0.5s ease;
       opacity: 1;
       pointer-events: auto;
+      z-index: 10;
+      visibility: visible;
     }
     .hidden {
       opacity: 0;
       pointer-events: none;
     }
 
+    /* Скрываем по visibility через JS */
+
     /* Стиль логотипа */
     #logo-screen h1 {
       font-size: 3em;
       color: #2196F3;
+      user-select: none;
     }
 
     /* Форма ввода */
@@ -69,6 +75,7 @@
       margin-top: 15px;
       width: 250px;
       max-width: 90%;
+      user-select: none;
     }
     #input-screen button:disabled {
       background-color: #90caf9;
@@ -77,6 +84,7 @@
     #input-screen p.error {
       color: red;
       margin-top: 10px;
+      min-height: 20px;
     }
 
     /* Главное меню */
@@ -89,12 +97,15 @@
       flex-grow: 1;
       padding: 20px;
       overflow-y: auto;
+      width: 100%;
+      box-sizing: border-box;
     }
     #nav {
       display: flex;
       border-top: 1px solid #ccc;
       background: #f0f0f0;
       height: 56px;
+      width: 100%;
     }
     #nav button {
       flex-grow: 1;
@@ -104,6 +115,7 @@
       cursor: pointer;
       outline: none;
       transition: background-color 0.2s;
+      user-select: none;
     }
     #nav button:hover {
       background-color: #ddd;
@@ -118,12 +130,12 @@
 <body>
   <div id="app">
     <!-- Логотип -->
-    <div id="logo-screen" class="screen">
-      <h1>PeakForm</h1>
+    <div id="logo-screen" class="screen" style="visibility: visible;">
+      <h1>Мой Бренд</h1>
     </div>
 
     <!-- Ввод веса и роста -->
-    <div id="input-screen" class="screen hidden">
+    <div id="input-screen" class="screen hidden" style="visibility: hidden;">
       <h2>Введите ваши данные</h2>
       <input type="number" id="weight" placeholder="Вес (кг)" min="20" max="300" />
       <input type="number" id="height" placeholder="Рост (см)" min="50" max="250" />
@@ -132,7 +144,7 @@
     </div>
 
     <!-- Главное меню -->
-    <div id="menu-screen" class="screen hidden">
+    <div id="menu-screen" class="screen hidden" style="visibility: hidden;">
       <div id="content">
         <h2>План питания</h2>
         <p>Здесь будет план питания на 30 дней...</p>
@@ -160,20 +172,18 @@
       const errorMsg = document.getElementById('error-msg');
 
       const content = document.getElementById('content');
-      const menuFoodBtn = document.getElementById
-01:34
-
-
-'menu-food');
+      const menuFoodBtn = document.getElementById('menu-food');
       const menuWorkoutBtn = document.getElementById('menu-workout');
       const menuProfileBtn = document.getElementById('menu-profile');
 
-      // Плавный переход: через 2 секунды затухает заставка, потом показывается форма
+      // Плавный переход: через 2 секунды заставка исчезает
       setTimeout(() => {
         logoScreen.classList.add('hidden');
         setTimeout(() => {
+          logoScreen.style.visibility = 'hidden';
+          inputScreen.style.visibility = 'visible';
           inputScreen.classList.remove('hidden');
-        }, 500); // ждем завершения анимации затухания заставки
+        }, 500);
       }, 2000);
 
       // Валидация кнопки "Продолжить"
@@ -196,9 +206,11 @@
       continueBtn.onclick = () => {
         inputScreen.classList.add('hidden');
         setTimeout(() => {
+          inputScreen.style.visibility = 'hidden';
+          menuScreen.style.visibility = 'visible';
           menuScreen.classList.remove('hidden');
           showMenuContent('food');
-        }, 500); // ждем анимации затухания формы ввода
+        }, 500);
       };
 
       // Функция показа контента меню
@@ -226,4 +238,6 @@
     };
   </script>
 </body>
-</html>(
+</html>
+
+
