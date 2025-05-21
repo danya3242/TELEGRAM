@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Фитнес WebApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     html, body {
@@ -44,28 +45,35 @@
       pointer-events: none;
     }
 
-    /* Скрываем по visibility через JS */
-
     /* Стиль логотипа */
     #logo-screen h1 {
-      font-size: 3em;
+      font-size: 6vw; /* Адаптивный размер шрифта */
+      max-font-size: 3em;
       color: #2196F3;
       user-select: none;
+      margin: 0;
     }
 
     /* Форма ввода */
+    #input-screen h2 {
+      font-size: 5vw;
+      max-font-size: 2em;
+      margin-bottom: 15px;
+    }
     #input-screen input {
-      font-size: 18px;
+      font-size: 4vw;
+      max-font-size: 18px;
       padding: 10px;
       margin: 10px 0;
-      width: 250px;
-      max-width: 90%;
+      width: 100%;
+      max-width: 300px;
       border-radius: 6px;
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
     #input-screen button {
-      font-size: 18px;
+      font-size: 4vw;
+      max-font-size: 18px;
       padding: 10px 20px;
       background-color: #2196F3;
       color: white;
@@ -73,9 +81,10 @@
       border-radius: 6px;
       cursor: pointer;
       margin-top: 15px;
-      width: 250px;
-      max-width: 90%;
+      width: 100%;
+      max-width: 300px;
       user-select: none;
+      transition: background-color 0.3s;
     }
     #input-screen button:disabled {
       background-color: #90caf9;
@@ -85,6 +94,8 @@
       color: red;
       margin-top: 10px;
       min-height: 20px;
+      font-size: 3.5vw;
+      max-font-size: 16px;
     }
 
     /* Главное меню */
@@ -92,6 +103,8 @@
       display: flex;
       flex-direction: column;
       height: 100%;
+      width: 100%;
+      box-sizing: border-box;
     }
     #content {
       flex-grow: 1;
@@ -99,6 +112,8 @@
       overflow-y: auto;
       width: 100%;
       box-sizing: border-box;
+      font-size: 4vw;
+      max-font-size: 18px;
     }
     #nav {
       display: flex;
@@ -111,7 +126,7 @@
       flex-grow: 1;
       border: none;
       background: none;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
       outline: none;
       transition: background-color 0.2s;
@@ -125,13 +140,22 @@
       color: white;
       font-weight: bold;
     }
+
+    /* Скроллбар на мобиле */
+    #content::-webkit-scrollbar {
+      width: 6px;
+    }
+    #content::-webkit-scrollbar-thumb {
+      background-color: #2196F3;
+      border-radius: 3px;
+    }
   </style>
 </head>
 <body>
   <div id="app">
     <!-- Логотип -->
     <div id="logo-screen" class="screen" style="visibility: visible;">
-      <h1>PeakForm</h1>
+      <h1>Мой Бренд</h1>
     </div>
 
     <!-- Ввод веса и роста -->
